@@ -1,0 +1,60 @@
+@import '../settings/_variable.scss';
+
+/* ------------------- *\
+   FONT
+\* ------------------- */
+
+.mini {
+	font-size: 10px;
+}
+
+.small {
+	font-size: 12px;
+}
+
+.normal {
+	font-size: 14px;
+}
+
+.large {
+	font-size: 18px;
+}
+
+.strong {
+	font-weight: 700;
+}
+
+.snow {
+	color: #fff !important;
+}
+
+.light {
+	color: $fontColorLight !important;
+}
+
+.red {
+	color: $fontColorRed !important;
+}
+
+
+
+/* ------------------- *\
+   BORDER
+\* ------------------- */
+
+
+.br-light {
+	border-right: 1rpx solid $borderColorLight;
+}
+
+.bb-light {
+	border-bottom: 1rpx solid $borderColorLight;
+}
+
+/* ------------------- *\
+   BACKGROUND
+\* ------------------- */
+
+.bg-light {
+	background-color: $backgroundColorLight;
+}

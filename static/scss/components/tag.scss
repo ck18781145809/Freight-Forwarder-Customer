@@ -1,0 +1,16 @@
+.tag {
+	display: inline-block;
+	color: #fff;
+	border-radius: $borderRadius;
+	background-color: $backgroundColorPage;
+}
+
+.tag--mini {
+	font-size: 28rpx;
+	padding: 6rpx 14rpx 8rpx;
+	transform: scale(.5);
+}
+
+.tag--theme {
+	background-color: $themeColor;
+}
