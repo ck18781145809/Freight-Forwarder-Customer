@@ -1,0 +1,89 @@
+@import '../settings/_variable.scss';
+
+/* ------------------- *\
+   状态栏占位
+\* ------------------- */
+
+.status_bar {
+	height: var(--status-bar-height);  
+	width: 100%;  
+	background-color: #eee;  
+	
+	.top_view {
+		height: var(--status-bar-height);  
+		width: 100%;  
+		position: fixed;  
+		background-color: $themeColor;  
+		top: 0;  
+		z-index: 999;  
+	}
+}
+
+.placeholder--common {
+	height: 100rpx;
+}
+
+
+
+/* ------------------- *\
+   FONT
+\* ------------------- */
+
+.mini {
+	font-size: 10px;
+}
+
+.small {
+	font-size: 12px;
+}
+
+.normal {
+	font-size: 14px;
+}
+
+.large {
+	font-size: 18px;
+}
+
+.strong {
+	font-weight: 700;
+}
+
+.snow {
+	color: #fff !important;
+}
+
+.light {
+	color: $fontColorLight !important;
+}
+
+.dark {
+	color: $fontColorDark !important;
+}
+
+.red {
+	color: $fontColorRed !important;
+}
+
+
+
+/* ------------------- *\
+   BORDER
+\* ------------------- */
+
+
+.br-light {
+	border-right: 1rpx solid $borderColorLight;
+}
+
+.bb-light {
+	border-bottom: 1rpx solid $borderColorLight;
+}
+
+/* ------------------- *\
+   BACKGROUND
+\* ------------------- */
+
+.bg-light {
+	background-color: $backgroundColorLight;
+}

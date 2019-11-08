@@ -18,12 +18,12 @@
 </script>
 
 <style lang="scss">
-	@import "../static/scss/settings/_variable.scss";
+	@import "../common/scss/settings/_variable.scss";
 	
 	.tag {
 		display: inline-block;
 		color: #fff;
-		vertical-align: middle;
+		vertical-align: 4rpx;
 		border-radius: $borderRadius;
 		background-color: $backgroundColorPage;
 	}
@@ -33,11 +33,13 @@
 	}
 	
 	.tag--mini {
-		padding: 3rpx 7rpx 4rpx;
+		padding: 4rpx 7rpx 4rpx;
 		font-size: 14rpx;
-		line-height: 1.5;
+		line-height: 1.2;
 		border-radius: ($borderRadius / 2);
-		// transform: scale(.5);
+		/* #ifdef H5 */
+			transform: scale(0.8);
+		/* #endif */
 	}
 	
 	.tag--red {

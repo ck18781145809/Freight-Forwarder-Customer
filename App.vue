@@ -14,9 +14,9 @@
 
 <style lang="scss">
 	/*每个页面公共css */
-	@import "@/static/scss/settings/reset.scss";
-	@import "@/static/scss/bases/wrapper.scss";
-	@import "@/static/scss/tools/tool.scss";
+	@import "@/common/scss/settings/reset.scss";
+	@import "@/common/scss/bases/wrapper.scss";
+	@import "@/common/scss/tools/tool.scss";
 	
 	page {
 		background-color: #ebebeb;

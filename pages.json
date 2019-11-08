@@ -1,19 +1,8 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
-			"path": "pages/tab02-goods/index",
-			"style": {
-				"navigationBarTitleText": "订货分类",
-				"app-plus": {  
-					"titleNView": false,
-					"navigationBarTextStyle": "white"
-				}  
-			}
-		},
-		{
 			"path": "pages/tab01-index/index",
 			"style": {
-				"navigationBarTitleText": "uni-app",
 				"pullToRefresh": {
 					"support": true,
 					"color": "#dd131a",
@@ -21,14 +10,65 @@
 					"offset": "120px"
 				},
 				"app-plus": {  
-					"titleNView": false,
-					"navigationBarTextStyle": "white"
+					"titleNView": false
+				}  
+			}
+		},
+		{
+			"path": "pages/tab03-cart/index",
+			"style": {
+				"pullToRefresh": {
+					"support": true,
+					"color": "#dd131a",
+					"style": "circle",
+					"offset": "80px"
+				},
+				"app-plus": {  
+					"titleNView": false
+				}  
+			}
+		},
+		{ 
+			"path": "pages/tab02-goods/index",
+			"style": {
+				"app-plus": {  
+					"titleNView": false
+				}  
+			}
+		},
+		{
+			"path": "pages/tab00-login/login",
+			"style": {
+				"app-plus": {  
+					"titleNView": false
+				}  
+			}
+		},
+		{
+			"path": "pages/tab00-login/register",
+			"style": {
+				"app-plus": {  
+					"titleNView": false
+				}  
+			} 
+		},
+		{
+			"path": "pages/tab01-index/index",
+			"style": {
+				"pullToRefresh": {
+					"support": true,
+					"color": "#dd131a",
+					"style": "circle",
+					"offset": "120px"
+				},
+				"app-plus": {  
+					"titleNView": false
 				}  
 			}
 		}
 	],
 	"globalStyle": {
-		"navigationBarTextStyle": "black",
+		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "uni-app",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
@@ -51,7 +91,7 @@
 				"text": "订货分类"
 			},
 			{
-				"pagePath": "pages/tab01-index/index",
+				"pagePath": "pages/tab03-cart/index",
 				"iconPath": "./static/image/icon/tabbar/icon-tabbar-cart@2x.png",
 				"selectedIconPath": "./static/image/icon/tabbar/icon-tabbar-cart-hl@2x.png",
 				"text": "购物车"

@@ -1,5 +1,15 @@
 <template>
-	<view class="btn" :class="{'btn--inline': inline, 'btn--red': (color === 'red')}" @tap="buttonTapHandler" :hover-class="hoverClass">
+	<view 
+	class="btn" 
+	:class="{
+			'btn--red': (color === 'red'),
+			'btn--green': (color === 'green'),
+			'btn--large': (size === 'large'),
+			'btn--square': square
+		}" 
+	:style="selfStyle"
+	:hover-class="hoverClass"
+	@tap="buttonTapHandler" >
 		<slot></slot>
 	</view>
 </template>
@@ -7,13 +17,21 @@
 <script>
 	export default {
 		props: {
-			inline: {
-				type: Boolean,
-				default: false
-			},
 			color: {
 				type: String,
 				default: 'default'
+			},
+			size: {
+				type: String,
+				default: 'normal'
+			},
+			square: {
+				type: Boolean,
+				default: false
+			},
+			selfStyle: {
+				type: String,
+				default: ''
 			}
 		},
 		computed: {
@@ -30,9 +48,11 @@
 </script>
 
 <style lang="scss">
-	@import '@/static/scss/settings/_variable.scss';
+	@import '@/common/scss/settings/_variable.scss';
 	
 	.btn {
+		padding: 12rpx 20rpx 14rpx;
+		text-align: center;
 		border-radius: 40rpx;
 	}
 	
@@ -41,11 +61,25 @@
 		background-color: $buttonColorRed;
 	}
 	
+	.btn--green {
+		color: #fff;
+		background-color: $buttonColorGreen;
+	}
+	
 	.btn--red--hover {
 		background-color: $buttonColorRedHover;
 	}
 	
-	.btn--inline {
-		padding: 18rpx 70rpx;
+	.btn--green--hover {
+		background-color: $buttonColorGreenHover;
+	}
+	
+	.btn--large {
+		border-radius: 48rpx;
+		padding: 32rpx 0 34rpx;
+	}
+	
+	.btn--square {
+		border-radius: 8rpx;
 	}
 </style>

@@ -60,33 +60,7 @@
 						<text>￥</text>
 						<text class="large">61.90</text>
 					</view>
-					<wl-button inline :color="'red'">加入购物车</wl-button>
-				</view>
-			</view>
-			
-			<view class="good">
-				<view class="f-c light">本商品为专供商品</view>
-				<view class="good_image bg-light mt-10"></view>
-				<view class="f-s-c mt-5 ph-15 bb-light">
-					<view class="flex-full flex-col f-s br-light">
-						<text>雪花（SNOW）啤酒清爽8度 纸箱装</text>
-						<text class="mt-5 light small">商品编号：6263666</text>
-					</view>
-					<view class="flex-col f-s-c mv-15">
-						<text class="red">1.3万</text>
-						<text class="mt-5 light small">关注商家</text>
-					</view>
-				</view>
-				<view class="f-b-c mt-15">
-					<text class="red">预售时间：10月22日</text>
-					<text class="light">今日已订500份/10件起订</text>
-				</view>
-				<view class="f-b-c mt-20 mb-10">
-					<view class="f-s-e red strong">
-						<text>￥</text>
-						<text class="large">61.90</text>
-					</view>
-					<wl-button inline :color="'red'">加入购物车</wl-button>
+					<wl-button :color="'red'" self-style="padding: 18rpx 70rpx;">加入购物车</wl-button>
 				</view>
 			</view>
 		</view>
@@ -123,14 +97,7 @@
 		methods: {
 			sliderChangeHandler(e) {
 				this.sliderCurrent = e.detail.current
-			},
-		},
-		onLoad() {
-			//  添加购物车角标
-			uni.setTabBarBadge({
-				index: 2,
-				text: '4'
-			})
+			}
 		},
 		onPullDownRefresh() {
 			//  取消刷新状态
@@ -140,7 +107,7 @@
 </script>
 
 <style lang="scss">
-	@import "@/static/scss/settings/_variable.scss";
+	@import "@/common/scss/settings/_variable.scss";
 	
 	.status_bar {  
 	    height: var(--status-bar-height);  

@@ -7,7 +7,10 @@
 		<!-- #endif -->
 		
 		<view class="goods_search">
-			<view class="goods_search_content"></view>
+			<view class="goods_search_content f-c">
+				<wl-icon name="search" theme="dark" size="16"></wl-icon>
+				<text class="ml-5">搜索</text>
+			</view>
 		</view>
 		
 		<view class="goods_content f-s flex-full">
@@ -15,8 +18,8 @@
 				<view 
 					class="goods_content_menu_item" 
 					:class="{active: goodsMenuInfoActiveIndex === index}" 
-					v-for="(item, index) in goodsMenuInfo" 
 					:keys="index"
+					v-for="(item, index) in goodsMenuInfo" 
 					@tap="goodsMenuTapHandler(index)"
 				>
 				{{item}}</view>
@@ -35,12 +38,13 @@
 				</view>
 				
 				<scroll-view class="goods_content_list_show flex-full">
-					<view class="goods_content_list_show_item f-s-c">
+					<view class="goods_content_list_show_item f-s-c" v-for="(item, idx) in goodsList">
 						<view class="goods_content_list_show_item_thumb"></view>
 						
 						<view class="goods_content_list_show_item_info flex-col f-b-s ml-10">
 							<view class="goods_content_list_show_item_info_title">
-								<wl-tag color="red" type="mini">新品</wl-tag><text class="small ml-5">雪花（SNOW）啤酒清爽8度 纸箱装【2件包邮】330ml*24听</text>
+								<wl-tag color="red" type="mini" style="vertical-align: 0;">新品</wl-tag>
+								<text class="ml-5">{{item.name}}</text>
 							</view>
 							
 							<view class="goods_content_list_show_item_info_check f-b-c">
@@ -49,6 +53,7 @@
 									<text class="red normal">61.90</text>
 									<text class="mini">/件</text>
 								</view>
+								<wl-count :good-id="item.id" @change="goodChangeHandler"></wl-count>
 							</view>
 						</view>
 					</view>
@@ -61,10 +66,12 @@
 <script>
 	import WlIcon from '@/components/wl-icon.vue';
 	import WlTag from '@/components/wl-tag.vue';
+	import WlCount from '@/components/wl-count.vue';
 	
 	export default {
 		data() {
 			return {
+				//  商品菜单信息
 				goodsMenuInfo: [
 					'热销爆款',
 					'新品上市',
@@ -73,43 +80,58 @@
 					'黑啤',
 					'脸谱'
 				],
-				goodsMenuInfoActiveIndex: 1
+				goodsMenuInfoActiveIndex: 1, //  当前选中菜单
+				//  商品列表
+				goodsList: [
+					{
+						name: '雪花（SNOW）啤酒清爽8度 纸箱装【2件包邮】330ml*24听',
+						id: '00001'
+					},
+					{
+						name: '可口可乐 330ml*24听',
+						id: '00002'
+					},
+					{
+						name: '旺仔牛奶 240ml*12听',
+						id: '00003'
+					}
+				],
+				cart: {} //  购物车信息
 			}
 		},
 		components: {
 			WlIcon,
-			WlTag
+			WlTag,
+			WlCount
 		},
 		methods: {
+			//  点击分类菜单
 			goodsMenuTapHandler(idx) {
 				this.goodsMenuInfoActiveIndex = idx;
+			},
+			//  选择货物数量
+			goodChangeHandler([GOOD_ID, GOOD_NUM]) {
+				this.cart[GOOD_ID] = GOOD_NUM
+				
+				//  计算购物车总数量
+				let goodsTotalNumber = Object.values(this.cart).reduce((acc, cur) => acc + cur)
+				
+				//  添加购物车角标
+				uni.setTabBarBadge({
+					index: 2,
+					text: goodsTotalNumber + ''
+				})
 			}
 		}
 	}
 </script>
 
 <style lang="scss">
-	@import '@/static/scss/settings/_variable.scss';
+	@import '@/common/scss/settings/_variable.scss';
 	
 	page, .content {
 		height: 100%;
 		padding: 0;
-	}
-	
-	
-	.status_bar {
-	    height: var(--status-bar-height);  
-	    width: 100%;  
-	    background-color: #eee;  
-		
-		.top_view {
-		    height: var(--status-bar-height);  
-		    width: 100%;  
-		    position: fixed;  
-		    background-color: $themeColor;  
-		    top: 0;  
-		    z-index: 999;  
-		}
 	}
 	
 	
@@ -141,7 +163,6 @@
 		}
 		
 			.goods_content_menu_item {
-				height: 85rpx;
 				line-height: 85rpx;
 				color: $fontColorLight;
 				text-align: center;
@@ -190,17 +211,19 @@
 					}
 					
 						.goods_content_list_show_item_info_title {
-							height: 28px;
-							font-size: 10px;
+							display:-webkit-box; 
 							overflow: hidden;
-							
-							text {
-								vertical-align: middle;
-							}
+							width: 100%;
+							height: 72rpx;
+							font-size: $fontSizeSmall;
+							line-height: 36rpx;
+							-webkit-box-orient:vertical;  
+							-webkit-line-clamp:2;  
 						}
 						
 						
 						.goods_content_list_show_item_info_check {
+							width: 100%;
 							font-size: 14px;
 						}
 </style>
