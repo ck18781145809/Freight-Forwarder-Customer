@@ -6,7 +6,7 @@
 			</view>  
 		<!-- #endif -->
 		
-		<view class="header">
+		<view class="header" :class="{close: isHeaderClose}">
 			<view class="header_menu">
 				<view class="f-b-c">
 					<view class="f-c">
@@ -32,19 +32,21 @@
 		<uni-swiper-dot :info="sliderInfo" :current="sliderCurrent" mode="default"  field="content">
 			<swiper class="slider swiper-box bg-light" @change="sliderChangeHandler">
 				<swiper-item v-for="(item, index) in sliderInfo" :key="index">
-					{{item.content}}
+					<image style="width: 100%;" :src="item.content" mode="aspectFill"></image>
 				</swiper-item>
 			</swiper>
 		</uni-swiper-dot>
 		
 		<view class="mt-20">
-			<view class="good">
+			<view class="good" v-for="(itm, idx) in goods" :key="itm.id">
 				<view class="f-c light">本商品为专供商品</view>
-				<view class="good_image bg-light mt-10"></view>
+				<view class="good_thumb mt-10">
+					<image :src="itm.iamge" mode="aspectFill"></image>
+				</view>
 				<view class="f-s-c mt-5 ph-15 bb-light">
-					<view class="flex-full flex-col f-s br-light">
-						<text>雪花（SNOW）啤酒清爽8度 纸箱装</text>
-						<text class="mt-5 light small">商品编号：6263666</text>
+					<view class="flex-full flex-col f-s pr-5 br-light">
+						<text class="good_name">{{itm.name}}</text>
+						<text class="mt-5 light small">商品编号：{{itm.id}}</text>
 					</view>
 					<view class="flex-col f-s-c mv-15">
 						<text class="red">1.3万</text>
@@ -52,62 +54,138 @@
 					</view>
 				</view>
 				<view class="f-b-c mt-15">
-					<text class="red">预售时间：10月22日</text>
-					<text class="light">今日已订500份/10件起订</text>
+					<text class="red">预售时间：{{itm.open_date}}</text>
+					<text class="light">今日已订{{itm.on_order}}份/{{itm.minimum_orde}}件起订</text>
 				</view>
 				<view class="f-b-c mt-20 mb-10">
 					<view class="f-s-e red strong">
 						<text>￥</text>
-						<text class="large">61.90</text>
+						<text class="large">{{itm.price}}</text>
 					</view>
 					<wl-button :color="'red'" self-style="padding: 18rpx 70rpx;">加入购物车</wl-button>
 				</view>
 			</view>
 		</view>
+		
+		<uni-load-more :status="uploadMoreStatus"></uni-load-more>
 	</view>
 </template>
 
 <script>
 	import WlIcon from '@/components/wl-icon.vue';
 	import WlButton from '@/components/wl-button.vue';
-	import uniSwiperDot from '@/components/uni/uni-swiper-dot.vue';
+	import UniSwiperDot from '@/components/uni/uni-swiper-dot.vue';
+	import UniLoadMore from '@/components/uni/uni-load-more.vue';
 	
 	export default {
 		data() {
 			return {
+				//  组件信息
+				windowHeight: this.$tools.getWindowHeight(),
+				
+				//  header状态
+				isHeaderClose: false,
+				
 				//  轮播
 				sliderCurrent: 0,
 				sliderInfo: [{
-						content: '内容 A'
+						content: 'http://pica.nipic.com/2008-03-22/2008322181251736_2.jpg'
 					},
 					{
-						content: '内容 B'
+						content: 'http://docs.ebdoor.com/Image/Company/61/617238_intro3.jpg'
 					},
 					{
-						content: '内容 C'
+						content: 'http://p8.qhimg.com/t01a039572f7e51eb1b.jpg'
 					}
 				],
+				
+				//  货物信息
+				goods: [],
+				
+				//  加载更多状态
+				uploadMoreStatus: 'more',
+				
+				//  页面滚动
+				scrollTop: 0
 			}
 		},
 		components: {
 			WlIcon,
 			WlButton,
-			uniSwiperDot
+			UniSwiperDot,
+			UniLoadMore
 		},
 		methods: {
 			sliderChangeHandler(e) {
-				this.sliderCurrent = e.detail.current
+				this.sliderCurrent = e.detail.current 
+			},
+			//  重新加载数据
+			async reloadData() {
+				const MINIMUM_GOODS = 5 //  最小展示数据条数，小于即为暂无更多数据
+				
+				this.$tools.showLoadingToast()
+				
+				const requestGoods = await this.$tools.get('getGoods')
+				
+				this.goods = requestGoods.data.data
+				
+				uni.hideToast()
+				
+				if(requestGoods.length < MINIMUM_GOODS) this.uploadMoreStatus = 'noMore'
+			},
+			//  加载更多数据
+			async loadData() {
+				this.uploadMoreStatus = 'loading'
+				
+				const requestGoods = await this.$tools.get('getGoods')
+
+				if(requestGoods.length === 0) {
+					this.uploadMoreStatus = 'noMore'
+					
+					return
+				}
+				
+				this.goods.push(...requestGoods.data.data)
+				
+				this.uploadMoreStatus = 'more'
 			}
 		},
-		onPullDownRefresh() {
+		async onLoad() {
+			await this.reloadData()
+		},
+		onHide() {
+			uni.hideToast()
+		},
+		async onPullDownRefresh() {
+			await this.reloadData()
+			
 			//  取消刷新状态
 			uni.stopPullDownRefresh()
+		},
+		async onReachBottom() {
+			this.uploadMoreStatus = 'loading'
+			
+			await this.loadData()
+			
+			this.uploadMoreStatus = 'more'
+		},
+		onPageScroll(obj) {
+			if(obj.scrollTop < this.windowHeight - 100) return
+			
+			if(obj.scrollTop - this.scrollTop < 0) {
+				this.isHeaderClose = false
+			} else {
+				this.isHeaderClose = true
+			}
+			
+			this.scrollTop = obj.scrollTop
 		}
 	}
 </script>
 
 <style lang="scss">
 	@import "@/common/scss/settings/_variable.scss";
+	@import "@/common/scss/settings/_mixin.scss";
 	
 	.status_bar {  
 	    height: var(--status-bar-height);  
@@ -115,7 +193,6 @@
 	    background-color: #eee;  
 		
 		.top_view {
-			
 		    height: var(--status-bar-height);  
 		    width: 100%;  
 		    position: fixed;  
@@ -126,6 +203,8 @@
 	}
 	
 	
+	$headerMovingSpeed: .2s; //  导航栏收起速度
+	
 	.header {
 		position: fixed;
 		top: 0;
@@ -135,11 +214,21 @@
 		left: 0;
 		right: 0;
 		z-index: 99999;
+		overflow: hidden;
 		width: 100%;
 		height: 170rpx;
 		padding: 25rpx 20rpx 30rpx;
 		background-color: $themeColor;
 		box-sizing: border-box;
+		transition: all $headerMovingSpeed;
+		
+		&.close {
+			height: 80rpx;
+			
+			.header_input {
+				transform: scale(0);
+			}
+		}
 		
 		.header_input {
 			height: 60rpx;
@@ -147,6 +236,8 @@
 			background-color: #fff;
 			border-radius: 40rpx;
 			box-sizing: border-box;
+			transform-origin: left top;
+			transition: all $headerMovingSpeed;
 		}
 	}
 	
@@ -166,7 +257,20 @@
 		background-color: #fff;
 	}
 	
-		.good_image {
+		.good_thumb {
 			height: 340rpx;
+			
+			image {
+				width: 100%;
+				height: 100%;
+			}
+		}
+		
+		.good_name {
+			@include TextOverflow-2;
+			
+			line-height: 36rpx;
+			height: 72rpx;
+			overflow: hidden;
 		}
 </style>

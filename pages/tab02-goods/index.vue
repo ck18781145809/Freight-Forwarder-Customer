@@ -38,7 +38,9 @@
 				</view>
 				
 				<scroll-view class="goods_content_list_show flex-full">
-					<view class="goods_content_list_show_item f-s-c" v-for="(item, idx) in goodsList">
+					<view class="goods_content_list_show_loading" :class="{show: isLoadingGoods}"></view>
+					
+					<view class="goods_content_list_show_item f-s-c" v-for="(item, idx) in goods">
 						<view class="goods_content_list_show_item_thumb"></view>
 						
 						<view class="goods_content_list_show_item_info flex-col f-b-s ml-10">
@@ -81,21 +83,11 @@
 					'脸谱'
 				],
 				goodsMenuInfoActiveIndex: 1, //  当前选中菜单
+				
 				//  商品列表
-				goodsList: [
-					{
-						name: '雪花（SNOW）啤酒清爽8度 纸箱装【2件包邮】330ml*24听',
-						id: '00001'
-					},
-					{
-						name: '可口可乐 330ml*24听',
-						id: '00002'
-					},
-					{
-						name: '旺仔牛奶 240ml*12听',
-						id: '00003'
-					}
-				],
+				goods: [],
+				isLoadingGoods: false, //  是否在加载数据（loading显示）
+				
 				cart: {} //  购物车信息
 			}
 		},
@@ -105,9 +97,20 @@
 			WlCount
 		},
 		methods: {
+			async reloadData() {
+				this.isLoadingGoods = true
+				
+				const requestGoods = await this.$tools.get('getGoods')
+				
+				this.goods = requestGoods.data.data
+				
+				this.isLoadingGoods = false
+			},
 			//  点击分类菜单
-			goodsMenuTapHandler(idx) {
+			async goodsMenuTapHandler(idx) {
 				this.goodsMenuInfoActiveIndex = idx;
+				
+				this.reloadData()
 			},
 			//  选择货物数量
 			goodChangeHandler([GOOD_ID, GOOD_NUM]) {
@@ -122,6 +125,9 @@
 					text: goodsTotalNumber + ''
 				})
 			}
+		},
+		onLoad() {
+			this.reloadData()
 		}
 	}
 </script>
@@ -160,6 +166,10 @@
 			height: 100%;
 			border-right: 1rpx solid $borderColorLight;
 			background-color: $backgroundColorPage;
+			
+			.uni-scroll-view {
+				width: 230rpx;
+			}
 		}
 		
 			.goods_content_menu_item {
@@ -190,8 +200,39 @@
 			
 			
 			.goods_content_list_show {
+				position: relative;
 				width: 100%;
 			}
+			
+				.goods_content_list_show_loading {
+					position: absolute;
+					top: 0;
+					right: 0;
+					bottom: 0;
+					left: 0;
+					z-index: 10;
+					display: none;
+					background-color: #fff;
+					
+					&.show {
+						display: block;
+					}
+					
+					&:after{
+						position: absolute;
+						top: 100rpx;
+						left: 50%;
+						content: '';
+						width: 80rpx;
+						height: 80rpx;
+						margin-left: -40rpx;
+						vertical-align: middle;
+						background-size: 100%;
+						background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHBhdGggZmlsbD0ibm9uZSIgZD0iTTAgMGgxMDB2MTAwSDB6Ii8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjRTlFOUU5IiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAgLTMwKSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iIzk4OTY5NyIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgzMCAxMDUuOTggNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjOUI5OTlBIiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKDYwIDc1Ljk4IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0EzQTFBMiIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSg5MCA2NSA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNBQkE5QUEiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoMTIwIDU4LjY2IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0IyQjJCMiIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgxNTAgNTQuMDIgNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjQkFCOEI5IiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKDE4MCA1MCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNDMkMwQzEiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTE1MCA0NS45OCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNDQkNCQ0IiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTEyMCA0MS4zNCA2NSkiLz48cmVjdCB3aWR0aD0iNyIgaGVpZ2h0PSIyMCIgeD0iNDYuNSIgeT0iNDAiIGZpbGw9IiNEMkQyRDIiIHJ4PSI1IiByeT0iNSIgdHJhbnNmb3JtPSJyb3RhdGUoLTkwIDM1IDY1KSIvPjxyZWN0IHdpZHRoPSI3IiBoZWlnaHQ9IjIwIiB4PSI0Ni41IiB5PSI0MCIgZmlsbD0iI0RBREFEQSIgcng9IjUiIHJ5PSI1IiB0cmFuc2Zvcm09InJvdGF0ZSgtNjAgMjQuMDIgNjUpIi8+PHJlY3Qgd2lkdGg9IjciIGhlaWdodD0iMjAiIHg9IjQ2LjUiIHk9IjQwIiBmaWxsPSIjRTJFMkUyIiByeD0iNSIgcnk9IjUiIHRyYW5zZm9ybT0icm90YXRlKC0zMCAtNS45OCA2NSkiLz48L3N2Zz4=");
+						-webkit-animation: uni-loading 1s steps(12) infinite;
+						animation: uni-loading 1s steps(12) infinite;
+					}
+				}
 			
 				.goods_content_list_show_item {
 					padding: 28rpx;
